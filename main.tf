@@ -35,7 +35,7 @@ resource "azuread_application" "this" {
     resource_app_id = data.azuread_service_principal.this.application_id
     resource_access {
       type = "Scope"
-      id   = [for app_role in data.azuread_service_principal.this.app_roles : app_role.id if app_role.value == var.app_resource_permission ][0]
+      id   = [for app_role in data.azuread_service_principal.this.app_roles : app_role.id if app_role.value == "GroupMember.Read.All" ][0]
     }
   }
 }

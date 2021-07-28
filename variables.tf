@@ -39,10 +39,12 @@ variable user_type {
 
 variable reply_urls {
 	type = list
+	description = "The URL to redirect the user back to after authentication succeeds."
 	default = []
 }
 
-variable app_resource_access {
+variable app_resource_permission {
 	type = string
+	description = "The permissions required by this application. 'GroupMember.Read.All' is used by Vault and Terraform Cloud to understand the group membership of the user signing in."
 	default = "GroupMember.Read.All"
 }

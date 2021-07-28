@@ -25,10 +25,10 @@ variable reset_azuread_application_password {
   default = false
 }
 
-variable groups_claim {
+variable group_membership_claim {
   type        = string
   description = ""
-  default     = "roles"
+  default     = "SecurityGroup"
 }
 
 variable user_type {

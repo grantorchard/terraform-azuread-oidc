@@ -29,6 +29,8 @@ resource "azuread_application" "this" {
   display_name = var.azuread_application_display_name != "" ? var.azuread_application_display_name : "${random_pet.this.id}-${random_integer.this.result}"
   reply_urls   = var.reply_urls
 
+	group_membership_claims = var.group_membership_claim
+
 	# Assign GroupMember.Read.All permissions to the Microsoft Graph
 	# per https://www.vaultproject.io/docs/auth/jwt_oidc_providers#azure-active-directory-aad
   required_resource_access {

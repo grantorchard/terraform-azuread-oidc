@@ -1,3 +1,5 @@
+provider "vault" {}
+
 ## Import OIDC module
 module "azuread_oidc" {
 	source = "github.com/grantorchard/terraform-azure-oidc.git"

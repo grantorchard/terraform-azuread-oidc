@@ -31,8 +31,8 @@ resource "azuread_application" "this" {
 
   web {
     redirect_uris = var.redirect_uris
-    homepage_url  = var.homepage_url
-    logout_url    = var.logout_url
+    homepage_url  = var.homepage_url != "" ? var.homepage_url : null
+    logout_url    = var.logout_url != "" ? var.logout_url : null
     implicit_grant {
       access_token_issuance_enabled = false
     }

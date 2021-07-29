@@ -19,7 +19,7 @@ locals {
 module "azuread_oidc" {
 	source = "github.com/grantorchard/terraform-azure-oidc.git"
 
-	reply_uris = [
+	redirect_uris = [
     "http://localhost:9200/v1/auth-methods/oidc:authenticate:callback"
   ]
 	app_resource_permissions = [

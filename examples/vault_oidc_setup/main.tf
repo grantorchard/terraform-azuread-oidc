@@ -4,7 +4,7 @@ provider "vault" {}
 module "azuread_oidc" {
 	source = "github.com/grantorchard/terraform-azure-oidc.git"
 
-	reply_uris = [
+	redirect_uris = [
     "http://localhost:8250/oidc/callback",
     "https://localhost:8200/ui/vault/auth/oidc/oidc/callback"
   ]

@@ -1,4 +1,4 @@
-variable azuread_application_password_length {
+variable "azuread_application_password_length" {
   type        = number
   default     = 128
   description = "Length of the password to be created for the Service Principal. Must be between 8 and 256 characters."
@@ -8,43 +8,53 @@ variable azuread_application_password_length {
   }
 }
 
-variable azuread_application_password_special_chars {
+variable "azuread_application_password_special_chars" {
   type        = bool
   default     = true
   description = "Whether to use special characters in the Service Principal password."
 }
 
-variable azuread_application_display_name {
+variable "azuread_application_display_name" {
   type        = string
   default     = ""
   description = "The name of the Service Principal/Enterprise Application that will be created in Azure Active Directory."
 }
 
-variable reset_azuread_application_password {
+variable "reset_azuread_application_password" {
   type    = bool
   default = false
 }
 
-variable group_membership_claim {
+variable "group_membership_claim" {
   type        = string
   description = ""
   default     = "SecurityGroup"
 }
 
-variable user_type {
+variable "user_type" {
   type        = string
   description = "The attribute of the JWT to use for user."
   default     = "email"
 }
 
-variable reply_urls {
-	type = list
-	description = "The URL to redirect the user back to after authentication succeeds."
-	default = []
+variable "reply_uris" {
+  type        = list(any)
+  description = "The URL to redirect the user back to after authentication succeeds."
+  default     = []
 }
 
-variable app_resource_permissions {
-	type = list(string)
-	description = "The permissions required by this application. 'GroupMember.Read.All' is used by Vault and Terraform Cloud to understand the group membership of the user signing in."
-	default = [ "GroupMember.Read.All" ]
+variable "app_resource_permissions" {
+  type        = list(string)
+  description = "The permissions required by this application. 'GroupMember.Read.All' is used by Vault and Terraform Cloud to understand the group membership of the user signing in."
+  default     = ["GroupMember.Read.All"]
+}
+
+variable "homepage_url" {
+	type = string
+	default = ""
+}
+
+variable "logout_url" {
+	type = string
+	default = ""
 }

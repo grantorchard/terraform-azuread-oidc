@@ -37,7 +37,7 @@ variable "user_type" {
   default     = "email"
 }
 
-variable "reply_uris" {
+variable "redirect_uris" {
   type        = list(any)
   description = "The URL to redirect the user back to after authentication succeeds."
   default     = []

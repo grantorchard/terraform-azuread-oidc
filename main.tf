@@ -19,8 +19,8 @@ resource "random_password" "this" {
   override_special = "@#$%^&*-_!+=[]{}|\\:',.?/`~\"(); "
 }
 
-## Create the AzureAD Enterprise App used by Vault
-// Discover the Microsoft Graph service principal so we can pass it to our Enterprise Application.
+## Create the AzureAD App Registration used by OIDC
+// Discover the Microsoft Graph service principal so we can pass it to our App Registration.
 data "azuread_service_principal" "this" {
   display_name = "Microsoft Graph"
 }
@@ -30,7 +30,7 @@ resource "azuread_application" "this" {
   group_membership_claims = var.group_membership_claim
 
   web {
-    redirect_uris = var.reply_urls
+    redirect_uris = var.redirect_uris
     homepage_url  = var.homepage_url
     logout_url    = var.logout_url
     implicit_grant {

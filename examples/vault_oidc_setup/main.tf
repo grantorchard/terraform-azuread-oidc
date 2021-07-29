@@ -4,17 +4,18 @@ provider "vault" {}
 module "azuread_oidc" {
 	source = "github.com/grantorchard/terraform-azure-oidc.git"
 
-	reply_urls = [
+	reply_uris = [
     "http://localhost:8250/oidc/callback",
-    "https://vault.hashicorp.com/ui/vault/auth/oidc/oidc/callback"
+    "https://localhost:8200/ui/vault/auth/oidc/oidc/callback"
   ]
+	group_membership_claim = "All"
 }
 
 
 ## Create JWT auth backed, and a default role
 resource "vault_jwt_auth_backend" "this" {
   type               = "oidc"
-  path               = "azuread_oidc"
+  path               = "oidc"
   oidc_discovery_url = module.azuread_oidc.oidc_discovery_url
   oidc_client_id     = module.azuread_oidc.application_client_id
   oidc_client_secret = module.azuread_oidc.azuread_application_password
@@ -29,10 +30,11 @@ resource "vault_jwt_auth_backend_role" "this" {
   ]
   user_claim   = "email"
   role_type    = "oidc"
-	groups_claim = "roles"
+	groups_claim = "groups"
+	verbose_oidc_logging = true
 
 	allowed_redirect_uris = [
     "http://localhost:8250/oidc/callback",
-    "https://vault.hashicorp.com/ui/vault/auth/oidc/oidc/callback"
+    "https://localhost:8200/ui/vault/auth/oidc/oidc/callback"
   ]
 }

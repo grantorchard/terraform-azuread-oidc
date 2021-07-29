@@ -43,8 +43,8 @@ variable reply_urls {
 	default = []
 }
 
-variable app_resource_permission {
-	type = string
+variable app_resource_permissions {
+	type = list(string)
 	description = "The permissions required by this application. 'GroupMember.Read.All' is used by Vault and Terraform Cloud to understand the group membership of the user signing in."
-	default = "GroupMember.Read.All"
+	default = [ "GroupMember.Read.All" ]
 }

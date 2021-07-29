@@ -40,8 +40,8 @@ resource "azuread_application" "this" {
     dynamic "resource_access" {
 			for_each = toset(var.app_resource_permissions)
 			content {
-				type = "Scope"
-				id   = [ for app_role in data.azuread_service_principal.this.app_roles : app_role.id if app_role.value == each.value ][0]
+				type = "Role"
+				id   = [ for app_role in data.azuread_service_principal.this.app_roles : app_role.id if app_role.value == resource_access.value ][0]
 			}
 		}
   }
@@ -51,4 +51,9 @@ resource "azuread_application_password" "this" {
   application_object_id = azuread_application.this.id
   value                 = random_password.this.result
   end_date              = timeadd(timestamp(), "8766h")
+	lifecycle {
+		ignore_changes = [
+			end_date
+		]
+	}
 }

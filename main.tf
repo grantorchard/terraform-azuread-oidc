@@ -45,7 +45,7 @@ resource "azuread_application" "this" {
       for_each = toset(var.app_resource_permissions)
       content {
         type = "Scope"
-        id   = [for app_role in data.azuread_service_principal.this.app_roles : app_role.id if app_role.value == resource_access.value && app_role.type == "Admin"][0]
+        id   = [for app_role in data.azuread_service_principal.this.oauth2_permission_scopes : app_role.id if app_role.value == resource_access.value][0]
       }
     }
   }

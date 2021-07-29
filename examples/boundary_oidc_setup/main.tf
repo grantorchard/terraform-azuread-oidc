@@ -19,36 +19,34 @@ locals {
 module "azuread_oidc" {
 	source = "github.com/grantorchard/terraform-azure-oidc.git"
 
-	reply_urls = [
+	reply_uris = [
     "http://localhost:9200/v1/auth-methods/oidc:authenticate:callback"
   ]
-	app_resource_permission = "GroupMember.Read.All"
+	app_resource_permissions = [
+		"GroupMember.Read.All", 
+		"User.Read.All"
+	]
 	group_membership_claim = "All"
 }
 
 data "azuread_group" "boundary_admins" {
-	name = "Boundary Admins"
+	display_name = "Boundary Admins"
 }
 
-# resource "boundary_group" "admins" {
-# 	name = data.azuread_group.boundary_admins.id
-# 	scope_id = local.org_scope_id
-# }
-
 resource "boundary_role" "scope_admin" {
-  scope_id       = local.org_scope_id
-  grant_scope_id = local.org_scope_id
+  scope_id       = "global"
+  grant_scope_id = "global"
   grant_strings = [
     "id=*;type=*;actions=*"
   ]
   principal_ids = []
 }
 
-
 resource "boundary_auth_method_oidc" "this" {
   name                = "azuread_oidc"
-  scope_id            = local.org_scope_id
+  scope_id            = "global"
 	state               = "active-public"
+	is_primary_for_scope = true
 	callback_url        = "http://localhost:9200/v1/auth-methods/oidc:authenticate:callback"
   issuer              = "https://sts.windows.net/${module.azuread_oidc.azuread_tenant_id}/"
   client_id           = module.azuread_oidc.application_client_id
@@ -56,19 +54,5 @@ resource "boundary_auth_method_oidc" "this" {
   signing_algorithms  = [ "RS256" ]
   api_url_prefix      = "http://localhost:9200"
 	account_claim_maps  = []
-	# claims_scopes       = [
-	# 	"email",
-	# 	"profile",
-	# 	"groups"
-	# ]
+	claims_scopes       = []
 }
-
-
-# output "auth-method-id" {
-#   value = boundary_auth_method_oidc.this.id
-# }
-
-# boundary managed-groups create oidc -filter '"/token/email" == "doe@example.com"' -description "Oidc managed group for ProdOps"
-
-# boundary managed-groups create oidc -filter='"baf7d7ea-0474-46b0-bd20-17e738c29326" in "userinfo/roles"' -name "boundary_admins" -auth-method-id "amoidc_zp3StFOz4Z"
-# boundary managed-groups create oidc -filter '"/token/email" == "doe@example.com"' -name "boundary_admins" -auth-method-id "amoidc_zp3StFOz4Z"

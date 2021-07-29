@@ -26,26 +26,28 @@ data "azuread_service_principal" "this" {
 }
 
 resource "azuread_application" "this" {
-  display_name = var.azuread_application_display_name != "" ? var.azuread_application_display_name : "${random_pet.this.id}-${random_integer.this.result}"
-	group_membership_claims = var.group_membership_claim
+  display_name            = var.azuread_application_display_name != "" ? var.azuread_application_display_name : "${random_pet.this.id}-${random_integer.this.result}"
+  group_membership_claims = var.group_membership_claim
 
-	web {
-		redirect_uris = var.reply_urls
-	  implicit_grant {
-			access_token_issuance_enabled = false
-		}
-	}
-	# Assign GroupMember.Read.All permissions to the Microsoft Graph
-	# per https://www.vaultproject.io/docs/auth/jwt_oidc_providers#azure-active-directory-aad
+  web {
+    redirect_uris = var.reply_urls
+    homepage_url  = var.homepage_url
+    logout_url    = var.logout_url
+    implicit_grant {
+      access_token_issuance_enabled = false
+    }
+  }
+  # Assign GroupMember.Read.All permissions to the Microsoft Graph
+  # per https://www.vaultproject.io/docs/auth/jwt_oidc_providers#azure-active-directory-aad
   required_resource_access {
     resource_app_id = data.azuread_service_principal.this.application_id
     dynamic "resource_access" {
-			for_each = toset(var.app_resource_permissions)
-			content {
-				type = "Scope"
-				id   = [ for app_role in data.azuread_service_principal.this.app_roles : app_role.id if app_role.value == resource_access.value && app_role.type == "Admin" ][0]
-			}
-		}
+      for_each = toset(var.app_resource_permissions)
+      content {
+        type = "Scope"
+        id   = [for app_role in data.azuread_service_principal.this.app_roles : app_role.id if app_role.value == resource_access.value && app_role.type == "Admin"][0]
+      }
+    }
   }
 }
 
@@ -53,9 +55,9 @@ resource "azuread_application_password" "this" {
   application_object_id = azuread_application.this.id
   value                 = random_password.this.result
   end_date              = timeadd(timestamp(), "8766h")
-	lifecycle {
-		ignore_changes = [
-			end_date
-		]
-	}
+  lifecycle {
+    ignore_changes = [
+      end_date
+    ]
+  }
 }

@@ -26,7 +26,7 @@ resource "azuread_application" "this" {
   group_membership_claims = var.group_membership_claims
 
 	dynamic app_role {
-		for_each = local.app_roles
+		for_each = var.app_roles
 		content {
 			allowed_member_types = ["User"]
 			description          = "Application access for ${app_role.value}"

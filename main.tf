@@ -84,6 +84,6 @@ resource "azuread_app_role_assignment" "this" {
 
 resource "azuread_group" "this" {
 	for_each = toset(var.app_roles)
-	display_name = each.value.name
+	display_name = each.value
 	security_enabled = true
 }

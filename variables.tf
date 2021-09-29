@@ -65,3 +65,7 @@ variable "app_roles" {
 	type = list(string)
 	default = []
 }
+
+variable "user_assignment" {
+	type = list(object)
+}

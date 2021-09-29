@@ -63,4 +63,5 @@ variable "logout_url" {
 
 variable "app_roles" {
 	type = list(string)
+	default = []
 }

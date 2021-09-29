@@ -18,7 +18,7 @@ data "azuread_service_principal" "ms_graph" {
 }
 
 resource "random_uuid" "this" {
-	for_each = toset(local.app_roles)
+	for_each = toset(var.app_roles)
 }
 
 resource "azuread_application" "this" {
@@ -85,4 +85,5 @@ resource "azuread_app_role_assignment" "this" {
 resource "azuread_group" "this" {
 	for_each = { for v in var.app_roles: v.name => v }
 	display_name = each.value.name
+	security_enabled = true
 }

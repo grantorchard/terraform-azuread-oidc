@@ -82,7 +82,7 @@ resource "azuread_app_role_assignment" "this" {
 	app_role_id = azuread_application.this.app_role_ids[each.value.value]
 }
 
-data "azuread_group" "this" {
+resource "azuread_group" "this" {
 	for_each = { for v in var.app_roles: v.name => v }
 	display_name = each.value.name
 }

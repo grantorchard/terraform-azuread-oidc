@@ -18,7 +18,7 @@ data "azuread_service_principal" "ms_graph" {
 }
 
 resource "random_uuid" "this" {
-	for_each = { for v in local.app_roles: v.name => v }
+	for_each = toset(local.app_roles)
 }
 
 resource "azuread_application" "this" {
@@ -29,11 +29,11 @@ resource "azuread_application" "this" {
 		for_each = local.app_roles
 		content {
 			allowed_member_types = ["User"]
-			description          = "Application access for ${app_role.value.name}"
-			display_name         = app_role.value.display_name != "" ? app_role.value.display_name : app_role.value.name
-			enabled              = app_role.value.enabled
-			value                = replace(app_role.value.name, " ", "_")
-			id									 = random_uuid.this[app_role.value.name].result
+			description          = "Application access for ${app_role.value}"
+			display_name         = app_role.value
+			enabled              = "true"
+			value                = app_role.value
+			id									 = random_uuid.this[app_role.value].result
 		}
 	}
 
@@ -78,7 +78,7 @@ resource "azuread_application_password" "this" {
 resource "azuread_app_role_assignment" "this" {
 	for_each = { for v in azuread_application.this.app_role: v.value => v }
 	resource_object_id = azuread_service_principal.this.object_id
-	principal_object_id = data.azuread_group.this[each.value.display_name].object_id
+	principal_object_id = azuread_group.this[each.value.display_name].object_id
 	app_role_id = azuread_application.this.app_role_ids[each.value.value]
 }
 

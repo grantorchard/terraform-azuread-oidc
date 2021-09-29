@@ -2,7 +2,8 @@ terraform {
   required_providers {
     azuread = {
       source  = "hashicorp/azuread"
-      version = "~> 1.6.0"
+      version = "~> 2.4.0"
     }
   }
+	experiments = [module_variable_optional_attrs]
 }

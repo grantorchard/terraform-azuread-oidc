@@ -1,3 +1,11 @@
+locals {
+  app_roles = defaults(var.app_roles, {
+    allowed_member_types = "User"
+    enabled = true
+		display_name = ""
+	})
+}
+
 variable "azuread_application_password_length" {
   type        = number
   default     = 128
@@ -25,10 +33,12 @@ variable "reset_azuread_application_password" {
   default = false
 }
 
-variable "group_membership_claim" {
-  type        = string
+variable "group_membership_claims" {
+  type        = list(string)
   description = ""
-  default     = "SecurityGroup"
+  default     = [
+		"SecurityGroup"
+	]
 }
 
 variable "user_type" {
@@ -45,7 +55,7 @@ variable "redirect_uris" {
 
 variable "app_resource_permissions" {
   type        = list(string)
-  description = "The permissions required by this application. 'GroupMember.Read.All' is used by Vault and Terraform Cloud to understand the group membership of the user signing in."
+  description = "The permissions required by this application. 'GroupMember.Read.All' is used to query the group membership of the user signing in."
   default     = ["GroupMember.Read.All"]
 }
 
@@ -57,4 +67,13 @@ variable "homepage_url" {
 variable "logout_url" {
 	type = string
 	default = ""
+}
+
+variable "app_roles" {
+	type = list(object({
+    allowed_member_types = optional(list(string))
+    enabled = optional(bool)
+    name = string
+		display_name = optional(string)
+	}))
 }

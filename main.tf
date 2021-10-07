@@ -18,7 +18,7 @@ data "azuread_service_principal" "ms_graph" {
 }
 
 resource "random_uuid" "this" {
-	for_each = { for v in var.group_assignment: v.group_name => v}
+	for_each = { for v in var.user_assignment: v.group_name => v}
 }
 
 resource "azuread_application" "this" {
@@ -29,11 +29,11 @@ resource "azuread_application" "this" {
 		for_each = { for v in var.user_assignment: v.group_name => v }
 		content {
 			allowed_member_types = ["User"]
-			description          = "Application access for ${app_role.group_name}"
-			display_name         = app_role.group_name
+			description          = "Application access for ${app_role.value.group_name}"
+			display_name         = app_role.value.group_name
 			enabled              = "true"
-			value                = app_role.group_name
-			id									 = random_uuid.this[app_role.group_name].result
+			value                = app_role.value.group_name
+			id									 = random_uuid.this[app_role.value.group_name].result
 		}
 	}
 
@@ -76,7 +76,7 @@ resource "azuread_application_password" "this" {
 }
 
 resource "azuread_app_role_assignment" "this" {
-	for_each = { for v in azuread_application.this.user_assignment: v.group_name => v }
+	for_each = { for v in azuread_application.this.app_role: v.value => v }
 	resource_object_id = azuread_service_principal.this.object_id
 	principal_object_id = azuread_group.this[each.value.display_name].object_id
 	app_role_id = azuread_application.this.app_role_ids[each.value.value]
@@ -86,10 +86,10 @@ resource "azuread_group" "this" {
 	for_each = { for v in var.user_assignment: v.group_name => v }
 	display_name = each.value.group_name
 	security_enabled = true
-	members = azuread_users.this[each.value.group_name]
+	members = data.azuread_users.this[each.value.group_name].object_ids
 }
 
-resource "azuread_users" "this" {
+data "azuread_users" "this" {
 	for_each = { for v in var.user_assignment: v.group_name => v }
 	mail_nicknames = each.value.members
 }

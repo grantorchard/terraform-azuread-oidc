@@ -67,5 +67,8 @@ variable "app_roles" {
 }
 
 variable "user_assignment" {
-	type = list(object)
+	type = list(object({
+		group_name = string
+		members = list(string)
+	}))
 }

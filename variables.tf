@@ -71,4 +71,15 @@ variable "user_assignment" {
 		group_name = string
 		members = list(string)
 	}))
+	default = []
+}
+
+variable "federated_identity_credentials" {
+	type = object({
+		display_name = string
+  	description = string
+  	audiences = list(string)
+  	issuer = string
+  	subject = string
+	})
 }

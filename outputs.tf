@@ -18,3 +18,7 @@ output "oidc_discovery_url" {
   value = "https://login.microsoftonline.com/${data.azuread_client_config.this.tenant_id}/v2.0"
 }
 
+# output "azuread_subscription_id" {
+# 	value = data.azuread_client_config.this.subsciption_id
+# }
+

@@ -59,6 +59,15 @@ resource "azuread_application" "this" {
   }
 }
 
+resource "azuread_application_federated_identity_credential" "this" {
+  application_object_id = azuread_application.this.object_id
+  display_name          = var.federated_identity_credentials.display_name
+  description           = var.federated_identity_credentials.description
+  audiences             = var.federated_identity_credentials.audiences
+  issuer                = var.federated_identity_credentials.issuer
+  subject               = var.federated_identity_credentials.subject
+}
+
 resource "azuread_service_principal" "this" {
   application_id = azuread_application.this.application_id
 }

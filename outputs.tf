@@ -10,8 +10,8 @@ output "azuread_application_password" {
   value = azuread_application_password.this.value
 }
 
-output "azuread_application_object_id" {
-  value = azuread_application.this.object_id
+output "service_principal_object_id" {
+  value = azuread_service_principal.this.object_id
 }
 
 output "azuread_tenant_id" {
